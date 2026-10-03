@@ -44,10 +44,6 @@
     --shadow:
       rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
   }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
 }
 
 body {
@@ -59,7 +55,6 @@ body {
   max-width: 100%;
   margin: 0 auto;
   text-align: center;
-  border-inline: 1px solid var(--border);
   min-height: 100svh;
   display: flex;
   flex-direction: column;
@@ -85,7 +80,6 @@ h1 {
 h2 {
   font-size: 24px;
   line-height: 118%;
-  letter-spacing: -0.24px;
   margin: 0 0 8px;
   @media (max-width: 1024px) {
     font-size: 20px;
@@ -95,17 +89,100 @@ p {
   margin: 0;
 }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
+
+.app-wrapper {
+  background-color: #0b131e;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 100svh;
+  color: #919594;
+}
+.page-title {
+  color: #919594;
+  font-size: 30px;
+  margin-bottom: 30px;
+}
+.header {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #202c3c;
+}
+.nav-bottom, .home-page {
+  display: flex;
+  justify-content: center;
+}
+.home-page {
+  flex-direction: column;
+      justify-content: space-between;
+    height: 100%;
+    min-height: calc(100vh - 74px);
+}
+.header a {
+  text-decoration: none;
+  padding: 24px 12px;
+  color: #fff;
+  display: block;
 }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+.weather-temp {
+  font-size: 28px;
+  color: #fff;
+}
+
+.forecast-wrapper {
+  background-color: #202c3c;
+  border-radius: 25px 25px 0 0;
+  padding: 25px;
+  max-width: 400px;
+  margin: auto auto 0;
+  width: 400px;
+}
+.forecast-title {
+  color: #919594;
+  font-size: 18px;
+}
+
+.forecast-card {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #919594;
+  color: #919594;
+}
+
+.search-input {
+  width: 250px;
+  padding: 8px;
+  border-radius: 9px;
+  border: 0;
+}
+
+.city-card  {
+  width: 400px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #202c3c;
+  border-radius: 10px;
+  margin: 0 auto 20px;
+  padding: 14px;
+}
+
+
+.search-wrapper {
+  margin-bottom: 35px;
+}
+
+.city-card_left {
+  text-align: left;
+}
+.city-name {
+  margin: 0 0 10px;
+}
+
+.city-temp {
+  font-size: 28px;
+  color: #fff;
 }
