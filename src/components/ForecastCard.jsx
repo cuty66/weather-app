@@ -1,10 +1,16 @@
-export default function ForecastCard() {
+export default function ForecastCard({hour, temp}) {
     return(
         <div className="forecast-card">
-            <span>12:00 PM</span>
+            <span>
+                {new Date(hour).toLocaleTimeString([], {
+                    hour: "numeric",
+                    minute: "2-digit",
+                    hour12: true
+                })}
+            </span>
             <div>
                 <span>icon</span>
-                <h5>25</h5>
+                <h5>{temp}</h5>
             </div>
         </div>
     )

@@ -186,3 +186,7 @@ p {
   font-size: 28px;
   color: #fff;
 }
+
+.today-forecast-lists {
+  display: flex;
+}
