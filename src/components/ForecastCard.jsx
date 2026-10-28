@@ -1,4 +1,4 @@
-export default function ForecastCard({hour, temp}) {
+export default function ForecastCard({hour, temp, precipitation}) {
     return(
         <div className="forecast-card">
             <span>
@@ -10,6 +10,7 @@ export default function ForecastCard({hour, temp}) {
             </span>
             <div>
                 <span>icon</span>
+                <span>Chance Of rain {precipitation}%</span>
                 <h5>{temp}</h5>
             </div>
         </div>

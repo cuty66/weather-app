@@ -8,7 +8,10 @@ export default function TodaysForecast({todayCast}) {
             </h3>
             <div className="today-forecast-lists">
                 { todayCast && todayCast.map( card => 
-                    <ForecastCard key={card.time} hour={card.time} temp={card.temperature} />
+                    <ForecastCard 
+                    key={card.time} 
+                    hour={card.time} 
+                    temp={card.temperature} rainChance={card.precipitation} />
                 )}
             </div>
         </div>

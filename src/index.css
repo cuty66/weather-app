@@ -136,9 +136,9 @@ p {
   background-color: #202c3c;
   border-radius: 25px 25px 0 0;
   padding: 25px;
-  max-width: 400px;
+  /* max-width: 400px; */
   margin: auto auto 0;
-  width: 400px;
+  /* width: 400px; */
 }
 .forecast-title {
   color: #919594;
