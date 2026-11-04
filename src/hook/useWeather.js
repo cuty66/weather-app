@@ -30,7 +30,6 @@ export default function useWeather(){
                 throw new Error(`Response status: ${weatherResponse.status}`);
             }
             const data2   = await weatherResponse.json();
-            console.log('hourly d', data2);
             setWeatherData(data2);
 
         } catch(error) {
@@ -53,7 +52,6 @@ export default function useWeather(){
                 throw new Error(`Response status: ${weatherResponse.status}`);
             }
             const data2   = await weatherResponse.json();
-            console.log('hourly d', data2);
             setWeatherData(data2);
         } catch(error) {
             setIsError(true);
@@ -75,7 +73,6 @@ export default function useWeather(){
 
             const data = await response.json();
 
-            // console.log("city data:", data);
             setCityData(data.city);
 
         } catch(error) {

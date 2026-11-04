@@ -11,7 +11,8 @@ export default function TodaysForecast({todayCast}) {
                     <ForecastCard 
                     key={card.time} 
                     hour={card.time} 
-                    temp={card.temperature} rainChance={card.precipitation} />
+                    temp={card.temperature} 
+                    rainChance={card.precipitation} />
                 )}
             </div>
         </div>

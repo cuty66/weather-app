@@ -15,7 +15,6 @@ export default function HomePage(){
         getCityByCoordinates
     } = useWeather();
 
-    // console.log(weatherData);
     useEffect(()=>{
         navigator.geolocation.getCurrentPosition((position) => {
                 const latitude = position.coords.latitude;
@@ -50,27 +49,23 @@ export default function HomePage(){
 
     const weatherDescription = weatherCode(weatherData?.current?.weather_code)
 
-    // const currentIndex = weatherData?.hourly?.time.indexOf(
-    //     weatherData?.current?.time
-    // );
-
     const nextHourIndex = weatherData?.hourly?.time.findIndex(
         time => time > weatherData?.current?.time
     );
     
     return(
         <div className="home-page">
-            <CurrentWeather 
+            {isError && <p>Page Occurred Error</p>}
+            {isLoading && !isError && <p>Page Data is Loading</p>}
+            { !isLoading && weatherData && ( <CurrentWeather 
             temp={weatherData?.current?.temperature_2m} 
             unit={weatherData?.current_units?.temperature_2m}
             city={cityData}
             description={weatherDescription}
-            rainChance={weatherData.hourly.precipitation_probability[nextHourIndex]}
-            />
+            rainChance={weatherData?.hourly?.precipitation_probability[nextHourIndex]}
+            />)}
 
-            {
-                todayData.length > 0 && <TodaysForecast todayCast={todayData}  />
-            }
+            { !isLoading && todayData.length > 0 && <TodaysForecast todayCast={todayData}  />}
         </div>
     )
 }
