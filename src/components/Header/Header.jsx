@@ -4,8 +4,12 @@ import Logo from './Logo';
 export default function Header(){
     return(
         <header className='header'>
-            <Navigation />
-            <Logo />
+            <div className="container">
+                <div className="row">
+                    <Navigation />
+                    <Logo />
+                </div>
+            </div>
         </header>
     )
 }

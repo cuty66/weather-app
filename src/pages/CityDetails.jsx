@@ -21,22 +21,24 @@ export default function CityDetails(){
     })).filter(item => item?.time.startsWith(today)) ?? [];
     return(
         <div className="city-detail-page">
-            <h1>{cityData?.name || city}</h1>
-            {isError && <p>Page Occurred Error</p>}
-            {isLoading && !isError && <p>Page Data is Loading</p>}
-            { !isLoading && weatherData && (<div>
-                <p>
-                    Temp: {weatherData?.current?.temperature_2m} <span>°C</span>
-                </p>
-                <p>Time: {new Date(weatherData?.current?.time).toLocaleTimeString()}</p>
-                <p>{weatherDescription}</p>
-                    
-                <h3>
-                    Today Forcast of {city}
-                </h3>
-                {todayData.length> 0 && (<TodaysForecast todayCast={todayData} />)}
+            <div className="container">
+                <h1>{cityData?.name || city}</h1>
+                {isError && <p>Page Occurred Error</p>}
+                {isLoading && !isError && <p>Page Data is Loading</p>}
+                { !isLoading && weatherData && (<div>
+                    <p>
+                        Temp: {weatherData?.current?.temperature_2m} <span>°C</span>
+                    </p>
+                    <p>Time: {new Date(weatherData?.current?.time).toLocaleTimeString()}</p>
+                    <p>{weatherDescription}</p>
+                        
+                    <h3>
+                        Today Forcast of {city}
+                    </h3>
+                    {todayData.length> 0 && (<TodaysForecast todayCast={todayData} />)}
+                </div>
+                )}
             </div>
-            )}
         </div>
     )
 }

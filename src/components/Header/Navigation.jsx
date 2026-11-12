@@ -1,17 +1,17 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { Home, MapPin  } from "lucide-react"
 
 export default function Navigation(){ 
     return(
         <nav className="nav-bottom">
-            <Link to="/">
+            <NavLink to="/" end>
                 <Home  />
                 Home
-            </Link>
-            <Link to="/city">
+            </NavLink>
+            <NavLink to="/city">
                 <MapPin />
                 City
-            </Link>
+            </NavLink>
         </nav>
     )
 }

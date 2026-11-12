@@ -1,4 +1,8 @@
-export default function ForecastCard({hour, temp, rainChance}) {
+import { Droplet } from "lucide-react";
+import WeatherIcons from "../utils/weatherIcons";
+
+export default function ForecastCard({hour, temp, rainChance, code}) {
+    const WeatherIcon = WeatherIcons[code];
     return(
         <div className="forecast-card">
             <span>
@@ -8,11 +12,9 @@ export default function ForecastCard({hour, temp, rainChance}) {
                     hour12: true
                 })}
             </span>
-            <div className="forecast-card_content">
-                <span>icon</span>
-                <span>Chance Of rain {rainChance}%</span>
-                <h5>{temp}</h5>
-            </div>
+            <span className="forecast-card_icon">{WeatherIcon && <WeatherIcon size="24" />}</span>
+            <h5 className="forecast-card_temp">{temp}</h5>
+            <span className="forecast-card_rain"><Droplet />{rainChance}%</span>
         </div>
     )
 }
