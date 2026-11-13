@@ -5,12 +5,12 @@ export default function Navigation(){
     return(
         <nav className="nav-bottom">
             <NavLink to="/" end>
-                <Home  />
-                Home
+                <Home size={16} />
+                صفحه اصلی
             </NavLink>
             <NavLink to="/city">
-                <MapPin />
-                City
+                <MapPin size={16} />
+                شهرها
             </NavLink>
         </nav>
     )

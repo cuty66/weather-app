@@ -1,42 +1,63 @@
 import { useParams } from "react-router-dom";
 import TodaysForecast from "../components/TodaysForecast";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useWeather from "../hook/useWeather";
-import weatherCode from '../utils/weatherCodes'
+import weatherCode from '../utils/weatherCodes';
+import CurrentWeather from "../components/CurrentWeather";
 
 export default function CityDetails(){
     const {city} = useParams();
-    const {cityData, weatherData, isLoading, isError, getWeatherByCity} = useWeather();
+    const [cityInfo, setCityInfo]= useState();
+    const {isLoading, isError, getWeatherByCity, findCityByName} = useWeather();
     useEffect(()=>{
         if(!city) return;
-        getWeatherByCity(city);
+        const foundCity = findCityByName(city);
+        if(!foundCity) return;
+        async function loadCityInfo() {
+            const result = await getWeatherByCity(foundCity);
+            setCityInfo(result);
+        }
+        loadCityInfo();
     },[city]);
-
-    const weatherDescription = weatherCode(weatherData?.current?.weather_code);
+    const wCode = cityInfo?.weather?.current?.weather_code;
+    const weatherDescription = weatherCode(cityInfo?.weather?.current?.weather_code);
     const today = new Date().toISOString().slice(0, 10);
-    const todayData = weatherData?.hourly?.time.map((time, index) => ({
+    const todayData = cityInfo?.weather?.hourly?.time.map((time, index) => ({
         time,
-        temperature: weatherData?.hourly?.temperature_2m[index],
-        precipitation: weatherData?.hourly?.precipitation_probability[index]
+        temperature: cityInfo?.weather?.hourly?.temperature_2m[index],
+        precipitation: cityInfo?.weather?.hourly?.precipitation_probability[index]
     })).filter(item => item?.time.startsWith(today)) ?? [];
+
+    const nextHourIndex = cityInfo?.weather?.hourly?.time.findIndex(
+        time => time > cityInfo?.weather?.current?.time
+    );
+
+    console.log(cityInfo)
     return(
         <div className="city-detail-page">
             <div className="container">
-                <h1>{cityData?.name || city}</h1>
-                {isError && <p>Page Occurred Error</p>}
                 {isLoading && !isError && <p>Page Data is Loading</p>}
-                { !isLoading && weatherData && (<div>
-                    <p>
-                        Temp: {weatherData?.current?.temperature_2m} <span>°C</span>
-                    </p>
-                    <p>Time: {new Date(weatherData?.current?.time).toLocaleTimeString()}</p>
-                    <p>{weatherDescription}</p>
-                        
-                    <h3>
-                        Today Forcast of {city}
-                    </h3>
-                    {todayData.length> 0 && (<TodaysForecast todayCast={todayData} />)}
-                </div>
+                {isError && <p>Page Occurred Error</p>}
+                { !isLoading && cityInfo && (
+                    <>
+                        {cityInfo?.weather && (
+                            <CurrentWeather 
+                                temp={cityInfo?.weather?.current?.temperature_2m} 
+                                unit={cityInfo?.weather?.current_units?.temperature_2m}
+                                city={cityInfo?.title}
+                                description={weatherDescription}
+                                rainChance={cityInfo?.weather?.hourly?.precipitation_probability[nextHourIndex]}
+                                humidity={cityInfo?.weather?.current?.relative_humidity_2m}
+                                wind={cityInfo?.weather?.current?.wind_speed_10m}
+                                code={wCode}
+                            />
+                        )}
+                    
+
+                        <div>
+                            {todayData.length> 0 && (<TodaysForecast todayCast={todayData} />)}
+                        </div>
+                    </>
                 )}
             </div>
         </div>

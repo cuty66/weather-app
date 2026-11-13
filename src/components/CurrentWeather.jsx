@@ -20,21 +20,21 @@ export default function CurrentWeather({temp, unit, city, description, rainChanc
                 <div className="current-city_item">
                     <Droplet />
                     <p>
-                        Chance of rain 
+                        میزان بارندگی
                         <span className="d-block">{rainChance} %</span>
                     </p>
                 </div>
                 <div className="current-city_item">
                     <Wind />
                     <p>
-                        Wind 
+                        باد 
                         <span className="d-block">{wind}</span>
                     </p>
                 </div>
                 <div className="current-city_item">
                     <Droplet />
                     <p>
-                        Humidity
+                        رطوبت
                         <span className="d-block">{humidity}</span>
                     </p>
                 </div>

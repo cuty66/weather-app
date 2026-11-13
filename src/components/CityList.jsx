@@ -1,7 +1,6 @@
 import CityCard from "./CityCard";
 
 export default function CityList({cities}) {
-    // console.log(cities.length)
     return(
         <div className="city-list-wrapper">
             {cities.length > 0 && (

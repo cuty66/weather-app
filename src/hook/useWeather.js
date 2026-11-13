@@ -11,19 +11,6 @@ export default function useWeather(){
     const [locationData, setLocationData] = useState(null);
     const [citiesWeather, setCitiesWeather] = useState([]);
 
-    // function findCityByName(cityName) {
-    //     const searchVal = cityName.trim().toLowerCase();
-    //     return cities.find( f => f.title === cityName ||  f.slug.toLowerCase() === searchVal )
-    // }
-    // function findCityByName(cityName) {
-    //     return cities.find(f => {
-    //         console.log("input:", [...cityName]);
-    //         console.log("data:", [...f.title]);
-
-    //         return f.title === cityName || f.slug === cityName;
-    //     });
-    // }
-
     function findCityByName(cityName) {
         const searchValue = normalizeText(cityName);
 
@@ -39,7 +26,7 @@ export default function useWeather(){
             const latitude = city.latitude;
             const longitude = city.longitude;
 
-            const weatherResponse  = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code&hourly=temperature_2m,precipitation_probability,relative_humidity_2m,wind_speed_10m`);
+            const weatherResponse  = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code,relative_humidity_2m,wind_speed_10m&hourly=temperature_2m,precipitation_probability`);
             if(!weatherResponse.ok) {
                 throw new Error(`Response status: ${weatherResponse.status}`);
             }
@@ -68,7 +55,7 @@ export default function useWeather(){
             if(!weatherResponse.ok) {
                 throw new Error(`Response status: ${weatherResponse.status}`);
             }
-            const data2   = await weatherResponse.json();
+            const data2 = await weatherResponse.json();
             setWeatherData(data2);
         } catch(error) {
             setIsError(true);

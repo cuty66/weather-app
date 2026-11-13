@@ -3,6 +3,7 @@ import CityList from "../components/CityList";
 import Search from "../components/Search";
 import useWeather from "../hook/useWeather";
 import useLocation from "../hook/useLocation";
+import { MapPin } from "lucide-react";
 
 export default function CityPage(){
     const [city, setCity] = useState("");
@@ -10,9 +11,7 @@ export default function CityPage(){
     const {location, getLocation} = useLocation();
     const [searchCity, setSearchCity] = useState(null);
     const {
-        // cityData, 
         locationData, 
-        // weatherData, 
         citiesWeather,
         isLoading, 
         isError, 
@@ -24,7 +23,6 @@ export default function CityPage(){
     function handleSearch(e){
         e.preventDefault();
         const foundCity = findCityByName(city);
-        console.log('foundCity', foundCity)
         if(!foundCity) return;
         getWeatherByCity(foundCity).then(result => {
             setSearchCity(result);
@@ -34,7 +32,6 @@ export default function CityPage(){
     function handleCity(e) {
         setCity(e.target.value);
     }
-    // console.log('searchCity', searchCity);
 
     useEffect(()=>{
         getLocation();
@@ -73,10 +70,10 @@ export default function CityPage(){
         <div className="city-page">
             <div className="container">
                 <div className="current-city_content">
-                    <h1 className="page-title">My Cities</h1>
-                    <h4>
+                    <h2 className="cities-page_title">
+                        <MapPin />
                         {locationData?.countryName } - {locationData?.principalSubdivision}
-                    </h4>
+                    </h2>
                     <Search onSearch={handleSearch} onCity={handleCity} myCity={city} />
                     {
                         isLoading && !isError &&

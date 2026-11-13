@@ -8,7 +8,7 @@ export default function TodaysForecast({todayCast}) {
         <div className="forecast-wrapper">
             <h3 className="forecast-title d-flex">
                 <Calendar />
-                Today's Forecast
+                پیش‌بینی آب‌وهوای امروز
             </h3>
             <div className="today-forecast-lists">
                 <Swiper 
