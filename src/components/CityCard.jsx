@@ -1,7 +1,8 @@
+import { memo } from "react";
 import { Clock, MapPin } from "lucide-react"
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
 
-export default function CityCard({city}) {
+export default memo(function CityCard({city}) {
     return(
         <div className="city-card">
             <Link to={`/city/${city.slug}`} >
@@ -21,4 +22,4 @@ export default function CityCard({city}) {
             </Link>
         </div>
     )
-}
+});

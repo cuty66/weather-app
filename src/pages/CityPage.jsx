@@ -12,9 +12,8 @@ export default function CityPage(){
     const [searchCity, setSearchCity] = useState(null);
     const {
         locationData, 
-        citiesWeather,
         isLoading, 
-        isError, 
+        error,
         getWeatherByCity, 
         getCityByCoordinates, 
         getCitiesByProvince,
@@ -46,7 +45,8 @@ export default function CityPage(){
         }
         getCityByCoordinates(location.latitude, location.longitude);
 
-    }, [location]);
+    }, [location.latitude,
+    location.longitude,getCityByCoordinates]);
 
 
     useEffect(() => {
@@ -55,14 +55,17 @@ export default function CityPage(){
         }
 
         async function loadCities() {
-            const data = await getCitiesByProvince(
+            const data = getCitiesByProvince(
                 locationData?.principalSubdivision
             );
             const citiesWithWeather = await getWeatherByCities(data);
             setCities(citiesWithWeather);
         }
         loadCities();
-    }, [locationData])
+    }, [ 
+        locationData,
+        getCitiesByProvince,
+        getWeatherByCities])
 
     return(
         <div className="city-page">
@@ -79,8 +82,8 @@ export default function CityPage(){
                     
                     <Search onSearch={handleSearch} onCity={handleCity} myCity={city} />
 
-                    {isLoading && !isError && <p className="text-center">صفحه در حال بارگذاری است</p> }
-                    {isError && <p className="text-center">{isError.message}</p> }
+                    {isLoading && !error && <p className="text-center">صفحه در حال بارگذاری است</p> }
+                    {error && <p className="text-center">{error}</p> }
 
                     {!isLoading && (
                         searchCity ? (

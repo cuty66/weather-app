@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import TodaysForecast from "../components/TodaysForecast";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import useWeather from "../hook/useWeather";
 import weatherCode from '../utils/weatherCodes';
 import CurrentWeather from "../components/CurrentWeather";
@@ -8,25 +8,32 @@ import CurrentWeather from "../components/CurrentWeather";
 export default function CityDetails(){
     const {city} = useParams();
     const [cityInfo, setCityInfo]= useState();
-    const {isLoading, isError, getWeatherByCity, findCityByName} = useWeather();
+    const {isLoading, error, getWeatherByCity, findCityByName} = useWeather();
     useEffect(()=>{
         if(!city) return;
+
         const foundCity = findCityByName(city);
+
         if(!foundCity) return;
+
         async function loadCityInfo() {
             const result = await getWeatherByCity(foundCity);
             setCityInfo(result);
         }
         loadCityInfo();
-    },[city]);
+
+    },[city, findCityByName, getWeatherByCity]);
+
     const wCode = cityInfo?.weather?.current?.weather_code;
     const weatherDescription = weatherCode(cityInfo?.weather?.current?.weather_code);
     const today = new Date().toISOString().slice(0, 10);
-    const todayData = cityInfo?.weather?.hourly?.time.map((time, index) => ({
+    const todayData = useMemo(() => {
+        return cityInfo?.weather?.hourly?.time.map((time, index) => ({
         time,
         temperature: cityInfo?.weather?.hourly?.temperature_2m[index],
         precipitation: cityInfo?.weather?.hourly?.precipitation_probability[index]
     })).filter(item => item?.time.startsWith(today)) ?? [];
+    }, [cityInfo, today])
 
     const nextHourIndex = cityInfo?.weather?.hourly?.time.findIndex(
         time => time > cityInfo?.weather?.current?.time
@@ -35,8 +42,8 @@ export default function CityDetails(){
     return(
         <div className="city-detail-page">
             <div className="container">
-                {isLoading && !isError && <p className="text-center">صفحه در حال بارگذاری است</p>}
-                {isError && <p className="text-center">Page Occurred Error</p>}
+                {isLoading && !error && <p className="text-center">صفحه در حال بارگذاری است</p>}
+                {error && <p className="text-center">{error}</p>}
                 { !isLoading && cityInfo && (
                     <>
                         {cityInfo?.weather && (

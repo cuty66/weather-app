@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import CurrentWeather from "../components/CurrentWeather";
 import TodaysForecast from "../components/TodaysForecast";
 import useWeather from "../hook/useWeather";
@@ -12,7 +12,7 @@ export default function HomePage(){
         cityData,
         weatherData,
         isLoading,
-        isError,
+        error,
         getWeatherByCoordinates,
         getCityByCoordinates
     } = useWeather();
@@ -28,16 +28,19 @@ export default function HomePage(){
         getWeatherByCoordinates(location.latitude, location.longitude);
         getCityByCoordinates(location.latitude, location.longitude);
 
-    }, [location]);
+    }, [ location.latitude,location.longitude,getWeatherByCoordinates,getCityByCoordinates]);
 
 
     const today = weatherData?.current?.time?.slice(0, 10);
-    const todayData = weatherData?.hourly?.time.map((time, index) => ({
-        time,
-        temperature: weatherData?.hourly.temperature_2m[index],
-        precipitation: weatherData?.hourly.precipitation_probability[index],
-        code: weatherData?.hourly.weather_code[index],
-    })).filter(item => item.time.startsWith(today)) ?? [];
+    const todayData = useMemo(() => {
+        return weatherData?.hourly?.time.map((time, index) => ({
+            time,
+            temperature: weatherData?.hourly.temperature_2m[index],
+            precipitation: weatherData?.hourly.precipitation_probability[index],
+            code: weatherData?.hourly.weather_code[index],
+        })).filter(item => item.time.startsWith(today)) ?? [];
+    }, [weatherData])
+   
 
     const wCode = weatherData?.current?.weather_code;
     const weatherDescription = weatherCode(wCode);
@@ -48,8 +51,8 @@ export default function HomePage(){
     return(
         <div className="home-page">
             <div className="container">
-                {isLoading && !isError && <p className="text-center">صفحه در حال بارگذاری است</p>}
-                {isError && <p className="text-center">Page Occurred Error</p>}
+                {isLoading && !error && <p className="text-center">صفحه در حال بارگذاری است</p>}
+                {error && <p className="text-center">{error}</p>}
 
                 { !isLoading && weatherData && ( 
                     <CurrentWeather 

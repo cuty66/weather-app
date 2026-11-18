@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback, useRef } from "react";
 import provinces from "../data/province.json";
 import cities from "../data/cities.json";
 import {normalizeText} from "../utils/normalizeText";
@@ -7,25 +7,34 @@ export default function useWeather(){
     const [weatherData, setWeatherData] = useState(null);
     const [cityData, setCityData] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
-    const [isError, setIsError] = useState(false);
+    const [error, setError] = useState(null);
     const [locationData, setLocationData] = useState(null);
+    const controllerRef = useRef(null);
 
-    function findCityByName(cityName) {
+    const findCityByName = useCallback((cityName) => {
         const searchValue = normalizeText(cityName);
 
         return cities.find(city =>
             normalizeText(city.title) === searchValue ||
             city.slug.toLowerCase() === searchValue.toLowerCase()
         );
-    }
-    async function getWeatherByCity(city){
+    },[]);
+
+    const getWeatherByCity = useCallback(async (city)=>{
+        controllerRef.current?.abort();
+        const controller = new AbortController();
+        controllerRef.current = controller;
+
         try {
             setIsLoading(true);
-            setIsError(false);
+            setError(null);
             const latitude = city.latitude;
             const longitude = city.longitude;
 
-            const weatherResponse  = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code,relative_humidity_2m,wind_speed_10m&hourly=temperature_2m,precipitation_probability`);
+            const weatherResponse  = await fetch(
+                `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code,relative_humidity_2m,wind_speed_10m&hourly=temperature_2m,precipitation_probability`,
+                {signal: controller.signal}
+            );
             if(!weatherResponse.ok) {
                 throw new Error(`Response status: ${weatherResponse.status}`);
             }
@@ -36,16 +45,22 @@ export default function useWeather(){
             };
 
         } catch(error) {
-            setIsError(true);
-            console.error(error.message);
-        } finally {
-            setIsLoading(false)
-        }
-        
-    }
+            if(error.name === "AbortError") {
+                return 
+            }
 
-    async function getWeatherByCities(cities) {
+            setError(error.message);
+        } finally {
+            if (controllerRef.current === controller) {
+                setIsLoading(false);
+            }
+        }
+    }, []);
+
+    const getWeatherByCities = useCallback(async (cities) => {
         try {
+            setIsLoading(true);
+            setError(null);
             const latitudes = cities.map(c => c.latitude);
             const longitudes = cities.map(c => c.longitude);
 
@@ -65,16 +80,17 @@ export default function useWeather(){
             }));
 
             return combinedData;
-            
+
         } catch (error) {
-            console.error(error.message);
+            setError(error.message);
+        } finally {
+            setIsLoading(false);
         }
-    }
+    }, []);
 
-
-    async function getWeatherByCoordinates(latitude, longitude) {
+    const getWeatherByCoordinates = useCallback(async (latitude, longitude)=>{
         setIsLoading(true);
-        setIsError(false);
+        setError(null);
         try {
             const weatherResponse  = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code,apparent_temperature,visibility,surface_pressure,relative_humidity_2m,wind_speed_10m&hourly=temperature_2m,precipitation_probability,weather_code&daily=sunrise&timezone=auto`);
 
@@ -84,15 +100,14 @@ export default function useWeather(){
             const data2 = await weatherResponse.json();
             setWeatherData(data2);
         } catch(error) {
-            setIsError(true);
-            console.error(error.message);
+            setError(error.message);
         } finally {
             setIsLoading(false)
         }
-    }
+    },[])
 
-    async function getCityByCoordinates(latitude, longitude) {
-        try {
+    const getCityByCoordinates = useCallback(async (latitude, longitude)=>{
+         try {
             const response = await fetch(
                 `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
             );
@@ -109,25 +124,22 @@ export default function useWeather(){
         } catch(error) {
             console.error(error.message);
         }
-    }
+    }, []);
 
-    async function getCitiesByProvince(stateName) {
+    const getCitiesByProvince = useCallback((stateName) => {
         try {
-            setIsLoading(true);
-            setIsError(false);
             const province = provinces.find(province => province.slug === stateName);
-            const citiesFiltered = cities.filter(
+            if (!province) {
+                throw new Error("استان یافت نشد");
+            }
+            return cities.filter(
                 city => city.province_id === province.id
             );
-            return citiesFiltered;
 
         } catch(error) {
-            setIsError(true);
             console.error(error.message);
-        } finally {
-            setIsLoading(false)
-        }
-    }
+        } 
+    }, []);
 
    
 
@@ -136,7 +148,8 @@ export default function useWeather(){
         locationData,
         weatherData,
         isLoading,
-        isError,
+        // isError,
+        error,
         getWeatherByCity,
         getWeatherByCoordinates,
         getCityByCoordinates,
