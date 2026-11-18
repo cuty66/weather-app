@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react"
+import { MapPin } from "lucide-react";
 import CityList from "../components/CityList";
 import Search from "../components/Search";
 import useWeather from "../hook/useWeather";
 import useLocation from "../hook/useLocation";
-import { MapPin } from "lucide-react";
+import findCityByName from "../utils/findCityByName"
 
 export default function CityPage(){
     const [city, setCity] = useState("");
@@ -17,7 +18,7 @@ export default function CityPage(){
         getWeatherByCity, 
         getCityByCoordinates, 
         getCitiesByProvince,
-        getWeatherByCities, findCityByName} = useWeather();
+        getWeatherByCities} = useWeather();
 
     function handleSearch(e){
         e.preventDefault();

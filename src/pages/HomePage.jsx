@@ -69,7 +69,7 @@ export default function HomePage(){
 
                 { !isLoading && todayData.length > 0 && <TodaysForecast todayCast={todayData}  />}
 
-                { !isLoading && !isError && weatherData && (<WeatherDetails 
+                { !isLoading && !error && weatherData && (<WeatherDetails 
                     feelsLike={weatherData?.current?.apparent_temperature} 
                     visibility={weatherData?.current?.visibility} 
                     pressure={weatherData?.current?.surface_pressure} 

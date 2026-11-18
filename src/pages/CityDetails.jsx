@@ -1,14 +1,15 @@
 import { useParams } from "react-router-dom";
-import TodaysForecast from "../components/TodaysForecast";
 import { useEffect, useState, useMemo } from "react";
+import TodaysForecast from "../components/TodaysForecast";
 import useWeather from "../hook/useWeather";
 import weatherCode from '../utils/weatherCodes';
 import CurrentWeather from "../components/CurrentWeather";
+import findCityByName from "../utils/findCityByName"
 
 export default function CityDetails(){
     const {city} = useParams();
     const [cityInfo, setCityInfo]= useState();
-    const {isLoading, error, getWeatherByCity, findCityByName} = useWeather();
+    const {isLoading, error, getWeatherByCity} = useWeather();
     useEffect(()=>{
         if(!city) return;
 
@@ -22,7 +23,7 @@ export default function CityDetails(){
         }
         loadCityInfo();
 
-    },[city, findCityByName, getWeatherByCity]);
+    },[city, getWeatherByCity]);
 
     const wCode = cityInfo?.weather?.current?.weather_code;
     const weatherDescription = weatherCode(cityInfo?.weather?.current?.weather_code);

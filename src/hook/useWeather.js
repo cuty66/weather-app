@@ -1,7 +1,6 @@
 import { useState, useCallback, useRef } from "react";
 import provinces from "../data/province.json";
 import cities from "../data/cities.json";
-import {normalizeText} from "../utils/normalizeText";
 
 export default function useWeather(){
     const [weatherData, setWeatherData] = useState(null);
@@ -11,14 +10,7 @@ export default function useWeather(){
     const [locationData, setLocationData] = useState(null);
     const controllerRef = useRef(null);
 
-    const findCityByName = useCallback((cityName) => {
-        const searchValue = normalizeText(cityName);
 
-        return cities.find(city =>
-            normalizeText(city.title) === searchValue ||
-            city.slug.toLowerCase() === searchValue.toLowerCase()
-        );
-    },[]);
 
     const getWeatherByCity = useCallback(async (city)=>{
         controllerRef.current?.abort();
@@ -148,14 +140,12 @@ export default function useWeather(){
         locationData,
         weatherData,
         isLoading,
-        // isError,
         error,
         getWeatherByCity,
         getWeatherByCoordinates,
         getCityByCoordinates,
         getCitiesByProvince,
         getWeatherByCities,
-        findCityByName
     }
 }
     
