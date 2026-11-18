@@ -9,7 +9,6 @@ export default function useWeather(){
     const [isLoading, setIsLoading] = useState(false);
     const [isError, setIsError] = useState(false);
     const [locationData, setLocationData] = useState(null);
-    const [citiesWeather, setCitiesWeather] = useState([]);
 
     function findCityByName(cityName) {
         const searchValue = normalizeText(cityName);
@@ -43,6 +42,33 @@ export default function useWeather(){
             setIsLoading(false)
         }
         
+    }
+
+    async function getWeatherByCities(cities) {
+        try {
+            const latitudes = cities.map(c => c.latitude);
+            const longitudes = cities.map(c => c.longitude);
+
+            const weatherResponse = await fetch(
+                `https://api.open-meteo.com/v1/forecast?latitude=${latitudes}&longitude=${longitudes}&current=temperature_2m,weather_code&hourly=temperature_2m,precipitation_probability,relative_humidity_2m,wind_speed_10m`
+            );
+
+            if (!weatherResponse.ok) {
+                throw new Error(`Response status: ${weatherResponse.status}`);
+            }
+
+            const data = await weatherResponse.json();
+
+            const combinedData = cities.map((city, index) => ({
+                ...city,
+                weather: data[index]
+            }));
+
+            return combinedData;
+            
+        } catch (error) {
+            console.error(error.message);
+        }
     }
 
 
@@ -87,38 +113,28 @@ export default function useWeather(){
 
     async function getCitiesByProvince(stateName) {
         try {
+            setIsLoading(true);
+            setIsError(false);
             const province = provinces.find(province => province.slug === stateName);
             const citiesFiltered = cities.filter(
                 city => city.province_id === province.id
             );
             return citiesFiltered;
 
-        } catch (error) {
+        } catch(error) {
+            setIsError(true);
             console.error(error.message);
-       }
+        } finally {
+            setIsLoading(false)
+        }
     }
 
-    async function getWeatherByCities(cities){
-        try {
-            const latitudes = cities.map(c => c.latitude);
-            const longitudes = cities.map(c => c.longitude);
-            const weatherResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitudes}&longitude=${longitudes}&current=temperature_2m,weather_code&hourly=temperature_2m,precipitation_probability,relative_humidity_2m,wind_speed_10m`);
-            if(!weatherResponse.ok) {
-                throw new Error(`Response status: ${weatherResponse.status}`);
-            }
-            const data = await weatherResponse.json();
-            setCitiesWeather(data);
-            
-        } catch(error) {
-            console.error(error.message);
-        } 
-    }
+   
 
     return {
         cityData,
         locationData,
         weatherData,
-        citiesWeather,
         isLoading,
         isError,
         getWeatherByCity,

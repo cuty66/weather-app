@@ -48,8 +48,9 @@ export default function HomePage(){
     return(
         <div className="home-page">
             <div className="container">
-                {isError && <p>Page Occurred Error</p>}
-                {isLoading && !isError && <p>Page Data is Loading</p>}
+                {isLoading && !isError && <p className="text-center">صفحه در حال بارگذاری است</p>}
+                {isError && <p className="text-center">Page Occurred Error</p>}
+
                 { !isLoading && weatherData && ( 
                     <CurrentWeather 
                         temp={weatherData?.current?.temperature_2m} 

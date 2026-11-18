@@ -32,12 +32,11 @@ export default function CityDetails(){
         time => time > cityInfo?.weather?.current?.time
     );
 
-    console.log(cityInfo)
     return(
         <div className="city-detail-page">
             <div className="container">
-                {isLoading && !isError && <p>Page Data is Loading</p>}
-                {isError && <p>Page Occurred Error</p>}
+                {isLoading && !isError && <p className="text-center">صفحه در حال بارگذاری است</p>}
+                {isError && <p className="text-center">Page Occurred Error</p>}
                 { !isLoading && cityInfo && (
                     <>
                         {cityInfo?.weather && (

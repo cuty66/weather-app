@@ -4,7 +4,7 @@ export default function Search({onSearch, myCity, onCity}){
             <form className="search-form" onSubmit={onSearch}>
                 <input 
                 className="search-input"
-                placeholder="search for cities" 
+                placeholder="جستجوی شهر شما ..." 
                 type="text" 
                 value={myCity} 
                 onChange={onCity} />

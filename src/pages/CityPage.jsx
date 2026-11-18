@@ -31,6 +31,9 @@ export default function CityPage(){
 
     function handleCity(e) {
         setCity(e.target.value);
+        if (!e.target.value.trim()) {
+            setSearchCity(null);
+        }
     }
 
     useEffect(()=>{
@@ -50,47 +53,42 @@ export default function CityPage(){
         if(!locationData?.countryName || !locationData.principalSubdivision) {
             return
         }
-        async function loadCities() {
-            const data = await getCitiesByProvince(locationData?.principalSubdivision);
-            setCities(data);
-            await getWeatherByCities(data);
-        }
 
+        async function loadCities() {
+            const data = await getCitiesByProvince(
+                locationData?.principalSubdivision
+            );
+            const citiesWithWeather = await getWeatherByCities(data);
+            setCities(citiesWithWeather);
+        }
         loadCities();
     }, [locationData])
-
-    const combinedData = cities.map((city, index) => {
-        return {
-            ...city,
-            weather: citiesWeather[index] || null
-        };
-    });
 
     return(
         <div className="city-page">
             <div className="container">
                 <div className="current-city_content">
-                    <h2 className="cities-page_title">
-                        <MapPin />
-                        {locationData?.countryName } - {locationData?.principalSubdivision}
-                    </h2>
-                    <Search onSearch={handleSearch} onCity={handleCity} myCity={city} />
                     {
-                        isLoading && !isError &&
-                        <p>is Loading</p>
-                    }
-                    {
-                        isError &&
-                        <p>Error is occured</p>
-                    }
-
-                    {!isLoading && searchCity ? 
-                        ( 
-                            <CityList cities={[searchCity]} /> 
-                        ) : (
-                            cities.length > 0 && <CityList cities={combinedData} />
+                        (locationData?.countryName || locationData?.principalSubdivision) && (
+                            <h2 className="cities-page_title">
+                                <MapPin />
+                                {locationData?.countryName } - {locationData?.principalSubdivision}
+                            </h2>
                         )
                     }
+                    
+                    <Search onSearch={handleSearch} onCity={handleCity} myCity={city} />
+
+                    {isLoading && !isError && <p className="text-center">صفحه در حال بارگذاری است</p> }
+                    {isError && <p className="text-center">{isError.message}</p> }
+
+                    {!isLoading && (
+                        searchCity ? (
+                            <CityList cities={[searchCity]} />
+                        ) : (
+                            cities.length > 0 && <CityList cities={cities} />
+                        )
+                    )}
                 </div>
             </div>
         </div>

@@ -8,8 +8,6 @@ export default function CityList({cities}) {
                 <CityCard 
                     key={city.id} 
                     city={city}
-                    temperature={city?.weather?.current?.temperature_2m}
-                    time={city?.weather?.current?.time}
                 />)
             )}
         </div>

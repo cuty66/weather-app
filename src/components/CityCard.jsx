@@ -1,7 +1,7 @@
 import { Clock, MapPin } from "lucide-react"
 import { Link } from "react-router-dom"
 
-export default function CityCard({city, temperature, time}) {
+export default function CityCard({city}) {
     return(
         <div className="city-card">
             <Link to={`/city/${city.slug}`} >
@@ -13,11 +13,11 @@ export default function CityCard({city, temperature, time}) {
                     <span className="time">
                         <Clock size={16} />
                         {
-                            time ? new Date(time).toLocaleTimeString() : ""
+                            city?.weather?.current?.time ? new Date(city?.weather?.current?.time).toLocaleTimeString() : ""
                         }
                     </span>
                 </div>
-                <h2 className="city-temp">{temperature}<span>°C</span></h2>
+                <h2 className="city-temp">{city?.weather?.current?.temperature_2m}<span>°C</span></h2>
             </Link>
         </div>
     )
